@@ -1,14 +1,14 @@
 import zlib
+
 import binwalk.core.compat
 import binwalk.core.plugin
-from binwalk.core.common import BlockFile
 
 
 class ZlibValidPlugin(binwalk.core.plugin.Plugin):
 
-    '''
+    """
     Validates zlib compressed data.
-    '''
+    """
     MODULES = ['Signature']
 
     MAX_DATA_SIZE = 33 * 1024

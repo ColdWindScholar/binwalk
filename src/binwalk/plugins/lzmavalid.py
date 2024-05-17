@@ -1,6 +1,5 @@
-import binwalk.core.plugin
 import binwalk.core.compat
-from binwalk.core.common import BlockFile
+import binwalk.core.plugin
 
 
 class LZMAPlugin(binwalk.core.plugin.Plugin):

@@ -1,14 +1,14 @@
 import zlib
+
 import binwalk.core.compat
 import binwalk.core.plugin
-from binwalk.core.common import BlockFile
 
 
 class GzipValidPlugin(binwalk.core.plugin.Plugin):
 
-    '''
+    """
     Validates gzip compressed data. Almost identical to zlibvalid.py.
-    '''
+    """
     MODULES = ['Signature']
 
     MAX_DATA_SIZE = 33 * 1024

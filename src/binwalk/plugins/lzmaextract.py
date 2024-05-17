@@ -3,10 +3,9 @@ import binwalk.core.plugin
 
 
 class LZMAExtractPlugin(binwalk.core.plugin.Plugin):
-
-    '''
+    """
     LZMA extractor plugin.
-    '''
+    """
     MODULES = ['Signature']
 
     def init(self):
@@ -37,8 +36,8 @@ class LZMAExtractPlugin(binwalk.core.plugin.Plugin):
                                                prepend=True)
         except ImportError as e:
             if self.module.extractor.enabled:
-                binwalk.core.common.warning("The Python LZMA module could not be found. It is *strongly* recommended that you install this module for binwalk to provide proper LZMA identification and extraction results.")
-
+                binwalk.core.common.warning(
+                    "The Python LZMA module could not be found. It is *strongly* recommended that you install this module for binwalk to provide proper LZMA identification and extraction results.")
 
     def extractor(self, fname):
         fname = os.path.abspath(fname)

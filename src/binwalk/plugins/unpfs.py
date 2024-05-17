@@ -5,6 +5,7 @@ import binwalk.core.common
 import binwalk.core.compat
 import binwalk.core.plugin
 
+
 class PFSCommon(object):
 
     def _make_short(self, data, endianness):
@@ -16,6 +17,7 @@ class PFSCommon(object):
         """Returns a 4 byte integer."""
         data = binwalk.core.compat.str2bytes(data)
         return struct.unpack('%sI' % endianness, data)[0]
+
 
 class PFS(PFSCommon):
     """Class for accessing PFS meta-data."""
@@ -36,7 +38,7 @@ class PFS(PFSCommon):
         strlen = buff.find('\0')
         for i, b in enumerate(buff[strlen:]):
             if b != '\0':
-                return strlen+i
+                return strlen + i
         return bufflen
 
     def _get_node(self):
@@ -60,6 +62,7 @@ class PFS(PFSCommon):
     def __exit__(self, type, value, traceback):
         self.meta.close()
 
+
 class PFSNode(PFSCommon):
     """A node in the PFS Filesystem containing meta-data about a single file."""
 
@@ -74,6 +77,7 @@ class PFSNode(PFSCommon):
         """Extracts the actual string from the available bytes."""
         self.fname = self.fname[:self.fname.find('\0')]
         self.fname = self.fname.replace('\\', '/')
+
 
 class PFSExtractor(binwalk.core.plugin.Plugin):
     """
@@ -106,7 +110,8 @@ class PFSExtractor(binwalk.core.plugin.Plugin):
                 for entry in fs.entries():
                     outfile_path = os.path.abspath(os.path.join(out_dir, entry.fname))
                     if not outfile_path.startswith(out_dir):
-                        binwalk.core.common.warning("Unpfs extractor detected directory traversal attempt for file: '%s'. Refusing to extract." % outfile_path)
+                        binwalk.core.common.warning(
+                            "Unpfs extractor detected directory traversal attempt for file: '%s'. Refusing to extract." % outfile_path)
                     else:
                         self._create_dir_from_fname(outfile_path)
                         outfile = binwalk.core.common.BlockFile(outfile_path, 'wb')

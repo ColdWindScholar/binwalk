@@ -16,7 +16,8 @@ class UBIValidPlugin(binwalk.core.plugin.Plugin):
     last_ec_hdr_offset = None
     peb_size = None
 
-    def _check_crc(self, ec_header):
+    @staticmethod
+    def _check_crc(ec_header):
         # Get the header's reported CRC value
         header_crc = struct.unpack(">I", ec_header[60:64])[0]
 

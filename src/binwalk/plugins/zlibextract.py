@@ -7,9 +7,9 @@ import binwalk.core.plugin
 
 class ZLIBExtractPlugin(binwalk.core.plugin.Plugin):
 
-    '''
+    """
     Zlib extractor plugin.
-    '''
+    """
     MODULES = ['Signature']
 
     def init(self):
@@ -21,7 +21,8 @@ class ZLIBExtractPlugin(binwalk.core.plugin.Plugin):
                                            extension="zlib",
                                            cmd=self.extractor)
 
-    def extractor(self, fname):
+    @staticmethod
+    def extractor(fname):
         outfile = os.path.splitext(fname)[0]
 
         try:

@@ -1,5 +1,5 @@
-import time
 import math
+
 import binwalk.core.plugin
 
 

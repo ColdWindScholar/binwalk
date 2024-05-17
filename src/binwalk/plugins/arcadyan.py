@@ -4,10 +4,9 @@ import binwalk.core.plugin
 
 
 class ArcadyanDeobfuscator(binwalk.core.plugin.Plugin):
-
-    '''
+    """
     Deobfuscator for known Arcadyan firmware obfuscation(s).
-    '''
+    """
     MODULES = ['Signature']
 
     OBFUSCATION_MAGIC_SIZE = 4
@@ -34,8 +33,8 @@ class ArcadyanDeobfuscator(binwalk.core.plugin.Plugin):
     def init(self):
         if self.module.extractor.enabled:
             self.module.extractor.add_rule(regex="^obfuscated arcadyan firmware",
-                extension="obfuscated",
-                cmd=self.extractor)
+                                           extension="obfuscated",
+                                           cmd=self.extractor)
 
     def extractor(self, fname):
         deobfuscated = None
@@ -62,7 +61,7 @@ class ArcadyanDeobfuscator(binwalk.core.plugin.Plugin):
             for i in range(self.BLOCK1_START, self.BLOCK1_END):
                 nswap += chr(((ord(deobfuscated[i]) & 0x0F) << 4) + ((ord(deobfuscated[i]) & 0xF0) >> 4))
             deobfuscated = deobfuscated[
-                self.P1_START:self.P1_END] + nswap + deobfuscated[self.BLOCK1_END:]
+                           self.P1_START:self.P1_END] + nswap + deobfuscated[self.BLOCK1_END:]
 
             # Byte-swap each byte pair in block 1
             bswap = ''
@@ -71,7 +70,7 @@ class ArcadyanDeobfuscator(binwalk.core.plugin.Plugin):
                 bswap += deobfuscated[i + 1] + deobfuscated[i]
                 i += 2
             deobfuscated = deobfuscated[
-                self.P1_START:self.P1_END] + bswap + deobfuscated[self.BLOCK1_END:]
+                           self.P1_START:self.P1_END] + bswap + deobfuscated[self.BLOCK1_END:]
 
         if deobfuscated:
             out = binwalk.core.common.BlockFile((os.path.splitext(fname)[0] + '.deobfuscated'), "wb")

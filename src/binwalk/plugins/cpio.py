@@ -3,13 +3,13 @@ import subprocess
 import binwalk.core.common
 import binwalk.core.plugin
 
-class CPIOPlugin(binwalk.core.plugin.Plugin):
 
-    '''
+class CPIOPlugin(binwalk.core.plugin.Plugin):
+    """
     Ensures that ASCII CPIO archive entries only get extracted once.
     Also provides an internal CPIO extraction wrapper around the Unix
     cpio utility since no output directory can be provided to it directly.
-    '''
+    """
     CPIO_OUT_DIR = "cpio-root"
     CPIO_HEADER_SIZE = 110
 
@@ -22,7 +22,7 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
             self.module.extractor.add_rule(regex="^ascii cpio archive",
                                            extension="cpio",
                                            cmd=self.extractor,
-                                           recurse=False)       # Most CPIO archives are file systems, so don't recurse into the extracted contents
+                                           recurse=False)  # Most CPIO archives are file systems, so don't recurse into the extracted contents
 
     def extractor(self, fname):
         result = None
@@ -110,7 +110,7 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
                 file_name_length = self._get_file_name_length(result.description)
 
                 # The +1 is to include the terminating NULL byte
-                if None in [file_size, file_name_length] or file_name_length != len(file_name)+1:
+                if None in [file_size, file_name_length] or file_name_length != len(file_name) + 1:
                     # If the reported length of the file name doesn't match the actual
                     # file name length, treat this as a false positive result.
                     result.valid = False
@@ -148,4 +148,3 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
                 # TODO: It would be better to jump to the end of this CPIO
                 # entry rather than make this assumption...
                 result.valid = False
-

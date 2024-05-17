@@ -3,12 +3,12 @@ import binwalk.core.plugin
 
 class ZipHelperPlugin(binwalk.core.plugin.Plugin):
 
-    '''
+    """
     A helper plugin for Zip files to ensure that the Zip archive
     extraction rule is only executed once when the first Zip archive
     entry is encountered. This resets once and end of zip archive is
     found.
-    '''
+    """
     MODULES = ['Signature']
 
     extraction_active = False
