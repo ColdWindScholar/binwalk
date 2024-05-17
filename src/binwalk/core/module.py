@@ -3,19 +3,19 @@
 # and the Modules class (main class for managing and executing binwalk modules)
 # are most critical.
 
+import argparse
+import inspect
 import io
 import os
-import sys
 import time
-import inspect
-import argparse
 import traceback
 from copy import copy
+
 import binwalk
-import binwalk.core.statuserver
 import binwalk.core.common
-import binwalk.core.settings
 import binwalk.core.plugin
+import binwalk.core.settings
+import binwalk.core.statuserver
 from binwalk.core.compat import *
 from binwalk.core.exceptions import *
 

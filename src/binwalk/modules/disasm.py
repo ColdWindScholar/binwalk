@@ -19,7 +19,6 @@ class Architecture(object):
 
 
 class Disasm(Module):
-
     THRESHOLD = 10
     DEFAULT_MIN_INSN_COUNT = 500
 
@@ -131,7 +130,8 @@ class Disasm(Module):
                     if len(set(code_block)) >= 2:
                         for (md, description) in self.disassemblers:
                             insns = [insn for insn in md.disasm_lite(code_block, (total_read + block_offset))]
-                            binwalk.core.common.debug("0x%.8X   %s, at least %d valid instructions" % ((total_read + block_offset),
+                            binwalk.core.common.debug(
+                                "0x%.8X   %s, at least %d valid instructions" % ((total_read + block_offset),
                                                                                  description,
                                                                                  len(insns)))
 
@@ -147,10 +147,10 @@ class Disasm(Module):
                                         break
                                 else:
                                     result = ArchResult(offset=total_read +
-                                        block_offset + fp.offset,
-                                        description=description,
-                                        insns=insns,
-                                        count=1)
+                                                               block_offset + fp.offset,
+                                                        description=description,
+                                                        insns=insns,
+                                                        count=1)
 
                     block_offset += 1
                     self.status.completed += 1
@@ -158,7 +158,8 @@ class Disasm(Module):
                 if result is not None:
                     r = self.result(offset=result.offset,
                                     file=fp,
-                                    description=(result.description + ", at least %d valid instructions" % len(result.insns)))
+                                    description=(result.description + ", at least %d valid instructions" % len(
+                                        result.insns)))
 
                     if r.valid and r.display:
                         if self.config.verbose:

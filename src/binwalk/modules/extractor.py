@@ -459,14 +459,14 @@ class Extractor(Module):
         self.extract_rules = []
 
     def get_rules(self, description=None):
-        '''
+        """
         Returns a list of extraction rules that match a given description.
 
         @description - The description to match against.
 
         Returns a list of extraction rules that match the given description.
         If no description is provided, a list of all rules are returned.
-        '''
+        """
         if description:
             rules = []
             description = description.lower()
@@ -479,13 +479,13 @@ class Extractor(Module):
         return rules
 
     def load_from_file(self, fname):
-        '''
+        """
         Loads extraction rules from the specified file.
 
         @fname - Path to the extraction rule file.
 
         Returns None.
-        '''
+        """
         try:
             # Process each line from the extract file, ignoring comments
             with open(fname, 'r') as f:
@@ -497,11 +497,11 @@ class Extractor(Module):
             raise Exception("Extractor.load_from_file failed to load file '%s': %s" % (fname, str(e)))
 
     def load_defaults(self):
-        '''
+        """
         Loads default extraction rules from the user and system extract.conf files.
 
         Returns None.
-        '''
+        """
         # Load the user extract file first to ensure its rules take precedence.
         extract_files = [
             self.config.settings.user.extract,
@@ -519,9 +519,9 @@ class Extractor(Module):
                         raise Exception("Extractor.load_defaults failed to load file '%s': %s" % (extract_file, str(e)))
 
     def get_output_directory_override(self):
-        '''
+        """
         Returns the current output directory basename override value.
-        '''
+        """
         return self.output_directory_override
 
     def override_output_directory_basename(self, dirname):
@@ -625,7 +625,7 @@ class Extractor(Module):
         # No extraction rules for this file
         if not rules:
             binwalk.core.common.debug("No extraction rules found for '%s'" % description)
-            return (None, None, False, str(None))
+            return None, None, False, str(None)
         else:
             binwalk.core.common.debug("Found %d matching extraction rules" % len(rules))
 
@@ -724,19 +724,19 @@ class Extractor(Module):
             binwalk.core.common.debug("Changing directory back to: %s" % original_dir)
             os.chdir(original_dir)
 
-        return (output_directory, fname, recurse, command_line)
+        return output_directory, fname, recurse, command_line
 
-        #if rule is not None:
+        # if rule is not None:
         #    if callable(rule['cmd']):
         #        command_name = get_class_name_from_method(rule['cmd'])
         #    else:
         #        command_name = rule['cmd']
         #    return (output_directory, fname, recurse, command_name)
-        #else:
+        # else:
         #    return (output_directory, fname, recurse, '')
 
     def _entry_offset(self, index, entries, description):
-        '''
+        """
         Gets the offset of the first entry that matches the description.
 
         @index       - Index into the entries list to begin searching.
@@ -745,7 +745,7 @@ class Extractor(Module):
 
         Returns the offset, if a matching description is found.
         Returns -1 if a matching description is not found.
-        '''
+        """
         description = description.lower()
 
         for (offset, infos) in entries[index:]:
@@ -755,7 +755,7 @@ class Extractor(Module):
         return -1
 
     def match(self, description):
-        '''
+        """
         Check to see if the provided description string matches an extract rule.
         Called internally by self.extract().
 
@@ -763,7 +763,7 @@ class Extractor(Module):
 
         Returns the associated rule dictionary if a match is found.
         Returns None if no match is found.
-        '''
+        """
         rules = []
         ordered_rules = []
         description = description.lower()
@@ -784,13 +784,13 @@ class Extractor(Module):
         return ordered_rules
 
     def _parse_rule(self, rule):
-        '''
+        """
         Parses an extraction rule.
 
         @rule - Rule string.
 
         Returns an array of ['<case insensitive matching string>', '<file extension>', '<command to run>', '<comma separated return codes>', <recurse into extracted directories: True|False>].
-        '''
+        """
         values = rule.strip().split(self.RULE_DELIM, 4)
 
         if len(values) >= 4:
@@ -890,7 +890,7 @@ class Extractor(Module):
         return fname
 
     def execute(self, cmd, fname, codes=[0, None]):
-        '''
+        """
         Execute a command against the specified file.
 
         @cmd   - Command to execute.
@@ -898,7 +898,7 @@ class Extractor(Module):
         @codes - List of return codes indicating cmd success.
 
         Returns True on success, False on failure, or None if the external extraction utility could not be found.
-        '''
+        """
         rval = 0
         retval = True
         command_list = []
@@ -956,7 +956,7 @@ class Extractor(Module):
             binwalk.core.common.warning("Extractor.execute failed to run external extractor '%s': %s, '%s' might not be installed correctly" % (str(cmd), str(e), str(cmd)))
             retval = None
 
-        return (retval, '&&'.join(command_list))
+        return retval, '&&'.join(command_list)
 
     def shell_call(self, command):
         # If not in debug mode, redirect output to /dev/null

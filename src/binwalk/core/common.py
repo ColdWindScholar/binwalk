@@ -1,12 +1,12 @@
 # Common functions used throughout various parts of binwalk code.
 
-import io
-import os
-import re
-import sys
 import ast
-import platform
+import io
 import operator as op
+import os
+import platform
+import re
+
 import binwalk.core.idb
 from binwalk.core.compat import *
 

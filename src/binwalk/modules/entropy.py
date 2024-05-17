@@ -1,9 +1,9 @@
 # Calculates and optionally plots the entropy of input files.
 
-import os
-import sys
 import math
+import os
 import zlib
+
 import binwalk.core.common
 from binwalk.core.compat import *
 from binwalk.core.module import Module, Option, Kwarg
@@ -18,8 +18,8 @@ except ImportError:
     def njit(func):
         return func
 
-class Entropy(Module):
 
+class Entropy(Module):
     XLABEL = 'Offset'
     YLABEL = 'Entropy'
 
@@ -130,7 +130,7 @@ class Entropy(Module):
                 self.block_size = None
 
     def _entropy_sigterm_handler(self, *args):
-        print ("Fuck it all.")
+        print("Fuck it all.")
 
     def run(self):
         self._run()
@@ -147,7 +147,8 @@ class Entropy(Module):
                     mpl.use('Agg')
                 import matplotlib.pyplot as plt
             except ImportError as e:
-                binwalk.core.common.warning("Failed to import matplotlib module, visual entropy graphing will be disabled")
+                binwalk.core.common.warning(
+                    "Failed to import matplotlib module, visual entropy graphing will be disabled")
                 self.do_plot = False
 
         for fp in iter(self.next_file, None):
@@ -256,14 +257,14 @@ class Entropy(Module):
             return self._shannon_numpy(bytes2str(data))
         else:
             return 0
-    
+
     @staticmethod
     @njit
     def _shannon_numpy(data):
-            A = np.frombuffer(data, dtype=np.uint8)
-            pA = np.bincount(A) / len(A)
-            entropy = -np.nansum(pA*np.log2(pA))
-            return (entropy / 8)
+        A = np.frombuffer(data, dtype=np.uint8)
+        pA = np.bincount(A) / len(A)
+        entropy = -np.nansum(pA * np.log2(pA))
+        return (entropy / 8)
 
     def gzip(self, data, truncate=True):
         '''
@@ -311,8 +312,8 @@ class Entropy(Module):
 
         # Add a fake, invisible plot entry so that offsets at/near the
         # minimum x value (0) are actually visible on the plot.
-        ax.plot(-(max(x)*.001), 1.1, lw=0)
-        ax.plot(-(max(x)*.001), 0, lw=0)
+        ax.plot(-(max(x) * .001), 1.1, lw=0)
+        ax.plot(-(max(x) * .001), 0, lw=0)
 
         if self.show_legend and has_key(self.file_markers, fname):
             for (offset, description) in self.file_markers[fname]:
@@ -342,4 +343,3 @@ class Entropy(Module):
             fig.savefig(self.output_file, bbox_inches='tight')
         else:
             plt.show()
-

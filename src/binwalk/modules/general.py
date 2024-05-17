@@ -1,14 +1,14 @@
 # Module to process general user input options (scan length, starting
 # offset, etc).
 
+import argparse
 import io
 import os
 import re
-import sys
-import argparse
-import binwalk.core.idb
+
 import binwalk.core.common
 import binwalk.core.display
+import binwalk.core.idb
 import binwalk.core.settings
 from binwalk.core.compat import *
 from binwalk.core.module import Module, Option, Kwarg, show_help
