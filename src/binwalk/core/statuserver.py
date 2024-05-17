@@ -18,7 +18,6 @@ class StatusRequestHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         message_format = "%s     %3d%%     [ %d / %d ]"
         last_status_message_len = 0
-        status_message = ''
         message_sent = False
 
         self.server.binwalk.status.running = True
