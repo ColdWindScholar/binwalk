@@ -23,6 +23,7 @@ for _module_path in [
 import binwalk
 import binwalk.modules
 
+
 def runme():
     with binwalk.Modules() as modules:
         try:
@@ -44,6 +45,7 @@ def runme():
         except binwalk.ModuleException as e:
             sys.exit(3)
 
+
 def main():
     try:
         # Special options for profiling the code. For debug use only.
@@ -61,4 +63,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

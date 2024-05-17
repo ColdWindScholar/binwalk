@@ -3,17 +3,18 @@
 # enabled by the user; other modules need not reference this module directly.
 
 import os
+if os.name != 'nt':
+    import pwd
 import re
-import pwd
-import stat
 import shlex
-import tempfile
+import stat
 import subprocess
+
 import binwalk.core.common
+from binwalk.core.common import file_size, file_md5, unique_file_name, BlockFile
 from binwalk.core.compat import *
 from binwalk.core.exceptions import ModuleException
 from binwalk.core.module import Module, Option, Kwarg
-from binwalk.core.common import file_size, file_md5, unique_file_name, BlockFile
 
 
 class ExtractDetails(object):
@@ -140,6 +141,8 @@ class Extractor(Module):
         if self.enabled is True:
             if self.runas_user is None:
                 # Get some info about the current user we're running under
+                if os.name == 'nt':
+                    return
                 user_info = pwd.getpwuid(os.getuid())
 
                 # Don't run as root, unless explicitly instructed to
@@ -151,6 +154,8 @@ class Extractor(Module):
                 self.runas_gid = user_info.pw_gid
             else:
                 # Run external applications as the specified user
+                if os.name == 'nt':
+                    return
                 user_info = pwd.getpwnam(self.runas_user)
                 self.runas_uid = user_info.pw_uid
                 self.runas_gid = user_info.pw_gid

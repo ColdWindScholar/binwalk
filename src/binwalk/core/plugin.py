@@ -1,32 +1,32 @@
 # Core code for supporting and managing plugins.
 
-import os
-import imp
 import inspect
+import os
+
 import binwalk.core.common
 import binwalk.core.settings
-from binwalk.core.compat import *
+from binwalk.core import imp
 from binwalk.core.exceptions import IgnoreFileException
 
 
 class Plugin(object):
 
-    '''
+    """
     Class from which all plugin classes are based.
-    '''
+    """
     # A list of case-sensitive module names for which this plugin should be loaded.
     # If no module names are specified, the plugin will be loaded for all
     # modules.
     MODULES = []
 
     def __init__(self, module):
-        '''
+        """
         Class constructor.
 
         @module - A handle to the current module that this plugin is loaded for.
 
         Returns None.
-        '''
+        """
         self.module = module
 
         if not self.MODULES or self.module.name in self.MODULES:
@@ -39,40 +39,40 @@ class Plugin(object):
         return self.__class__.__name__
 
     def init(self):
-        '''
+        """
         Child class should override this if needed.
         Invoked during plugin initialization.
-        '''
+        """
         pass
 
     def pre_scan(self):
-        '''
+        """
         Child class should override this if needed.
-        '''
+        """
         pass
 
     def new_file(self, fp):
-        '''
+        """
         Child class should override this if needed.
-        '''
+        """
         pass
 
     def scan(self, module):
-        '''
+        """
         Child class should override this if needed.
-        '''
+        """
         pass
 
     def post_scan(self):
-        '''
+        """
         Child class should override this if needed.
-        '''
+        """
         pass
 
 
 class Plugins(object):
 
-    '''
+    """
     Class to load and call plugin callback functions, handled automatically by Binwalk.scan / Binwalk.single_scan.
     An instance of this class is available during a scan via the Binwalk.plugins object.
 
@@ -84,7 +84,7 @@ class Plugins(object):
     By default, all plugins are loaded during binwalk signature scans. Plugins that wish to be disabled by
     default may create a class variable named 'ENABLED' and set it to False. If ENABLED is set to False, the
     plugin will only be loaded if it is explicitly named in the plugins whitelist.
-    '''
+    """
 
     SCAN = 'scan'
     NEWFILE = 'new_file'

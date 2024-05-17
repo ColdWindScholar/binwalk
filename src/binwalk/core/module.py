@@ -704,7 +704,7 @@ class Modules(object):
                 modules[module] = module.PRIORITY
 
         # user-defined modules
-        import imp
+        from binwalk.core import imp
         user_modules = binwalk.core.settings.Settings().user.modules
         for file_name in os.listdir(user_modules):
             if not file_name.endswith('.py'):
