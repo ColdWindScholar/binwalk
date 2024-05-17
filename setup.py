@@ -5,6 +5,7 @@ import sys
 import glob
 import shutil
 import subprocess
+
 try:
     from setuptools import setup, Command
 except ImportError:
@@ -276,6 +277,7 @@ complete -F _binwalk binwalk'''
         with open(autocomplete_file_path, "w") as fp:
             fp.write(auto_complete % ' '.join(options))
 
+
 class TestCommand(Command):
     description = "Run unit-tests"
     user_options = []
@@ -299,7 +301,7 @@ class TestCommand(Command):
         os.chdir(testing_directory)
 
         # Run the tests
-        retval = nose.core.run(argv=['--exe','--with-coverage'])
+        retval = nose.core.run(argv=['--exe', '--with-coverage'])
 
         sys.stdout.write("\n")
 
@@ -313,9 +315,10 @@ class TestCommand(Command):
             remove_tree(extracted_directory)
 
         if retval == True:
-           sys.exit(0)
+            sys.exit(0)
         else:
-           sys.exit(1)
+            sys.exit(1)
+
 
 # The data files to install along with the module
 install_data_files = []
@@ -350,5 +353,5 @@ setup(
         'uninstall': UninstallCommand,
         'idainstall': IDAInstallCommand,
         'idauninstall': IDAUnInstallCommand,
-        'autocomplete' : AutoCompleteCommand,
+        'autocomplete': AutoCompleteCommand,
         'test': TestCommand})

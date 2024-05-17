@@ -24,36 +24,36 @@ else:
 
 def MSWindows():
     # Returns True if running in a Microsoft Windows OS
-    return (platform.system() == 'Windows')
+    return platform.system() == 'Windows'
 
 
 def debug(msg):
-    '''
+    """
     Displays debug messages to stderr only if the Python interpreter was invoked with the -O flag.
-    '''
+    """
     if DEBUG:
         sys.stderr.write("DEBUG: " + msg + "\n")
         sys.stderr.flush()
 
 
 def warning(msg):
-    '''
+    """
     Prints warning messages to stderr
-    '''
+    """
     sys.stderr.write("\nWARNING: " + msg + "\n")
 
 
 def error(msg):
-    '''
+    """
     Prints error messages to stderr
-    '''
+    """
     sys.stderr.write("\nERROR: " + msg + "\n")
 
 
 def critical(msg):
-    '''
+    """
     Prints critical messages to stderr
-    '''
+    """
     sys.stderr.write("\nCRITICAL: " + msg + "\n")
 
 
@@ -69,13 +69,13 @@ def get_libs_path():
 
 
 def file_md5(file_name):
-    '''
+    """
     Generate an MD5 hash of the specified file.
 
     @file_name - The file to hash.
 
     Returns an MD5 hex digest string.
-    '''
+    """
     md5 = hashlib.md5()
 
     with open(file_name, 'rb') as f:
@@ -86,13 +86,13 @@ def file_md5(file_name):
 
 
 def file_size(filename):
-    '''
+    """
     Obtains the size of a given file.
 
     @filename - Path to the file.
 
     Returns the size of the file.
-    '''
+    """
     # Using open/lseek works on both regular files and block devices
     fd = os.open(filename, os.O_RDONLY)
     try:
@@ -107,13 +107,13 @@ def file_size(filename):
 
 
 def strip_quoted_strings(quoted_string):
-    '''
+    """
     Strips out data in between double quotes.
 
     @quoted_string - String to strip.
 
     Returns a sanitized string.
-    '''
+    """
     # This regex removes all quoted data from string.
     # Note that this removes everything in between the first and last double quote.
     # This is intentional, as printed (and quoted) strings from a target file may contain
@@ -124,14 +124,14 @@ def strip_quoted_strings(quoted_string):
 
 
 def get_quoted_strings(quoted_string):
-    '''
+    """
     Returns a string comprised of all data in between double quotes.
 
     @quoted_string - String to get quoted data from.
 
     Returns a string of quoted data on success.
     Returns a blank string if no quoted data is present.
-    '''
+    """
     try:
         # This regex grabs all quoted data from string.
         # Note that this gets everything in between the first and last double quote.
@@ -147,14 +147,14 @@ def get_quoted_strings(quoted_string):
 
 
 def unique_file_name(base_name, extension=''):
-    '''
+    """
     Creates a unique file name based on the specified base name.
 
     @base_name - The base name to use for the unique file name.
     @extension - The file extension to use for the unique file name.
 
     Returns a unique file string.
-    '''
+    """
     idcount = 0
 
     if extension and not extension.startswith('.'):
@@ -170,14 +170,14 @@ def unique_file_name(base_name, extension=''):
 
 
 def strings(filename, minimum=4):
-    '''
+    """
     A strings generator, similar to the Unix strings utility.
 
     @filename - The file to search for strings in.
     @minimum  - The minimum string length to search for.
 
     Yeilds printable ASCII strings from filename.
-    '''
+    """
     result = ""
 
     with BlockFile(filename) as f:
@@ -409,14 +409,14 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             self.seek(self.offset)
 
         def _swap_data_block(self, block):
-            '''
+            """
             Reverses every self.swap_size bytes inside the specified data block.
             Size of data block must be a multiple of self.swap_size.
 
             @block - The data block to swap.
 
             Returns a swapped string.
-            '''
+            """
             i = 0
             data = ""
 
@@ -441,14 +441,14 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
                 self.block_peek_size = peek
 
         def write(self, data):
-            '''
+            """
             Writes data to the opened file.
 
             io.FileIO.write does not guaruntee that all data will be written;
             this method overrides io.FileIO.write and does guaruntee that all data will be written.
 
             Returns the number of bytes written.
-            '''
+            """
             n = 0
             l = len(data)
             data = str2bytes(data)
@@ -459,7 +459,7 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             return n
 
         def read(self, n=-1, override=False):
-            ''''
+            """'
             Reads up to n bytes of data (or to EOF if n is not specified).
             Will not read more than self.length bytes unless override == True.
 
@@ -467,7 +467,7 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             this method overrides io.FileIO.read and does guaruntee that all data will be read.
 
             Returns a str object containing the read data.
-            '''
+            """
             l = 0
             data = b''
 
@@ -490,9 +490,9 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             return self._swap_data_block(bytes2str(data))
 
         def peek(self, n=-1):
-            '''
+            """
             Peeks at data in file.
-            '''
+            """
             pos = self.tell()
             data = self.read(n, override=True)
             self.seek(pos)
@@ -509,15 +509,15 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             super(self.__class__, self).seek(n, whence)
 
         def read_block(self):
-            '''
+            """
             Reads in a block of data from the target file.
 
             Returns a tuple of (str(file block data), block data length).
-            '''
+            """
             data = self.read(self.block_read_size)
             dlen = len(data)
             data += self.peek(self.block_peek_size)
 
-            return (data, dlen)
+            return data, dlen
 
     return InternalBlockFile(fname, mode=mode, **kwargs)
