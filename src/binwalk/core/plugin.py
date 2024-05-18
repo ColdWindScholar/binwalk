@@ -108,7 +108,8 @@ class Plugins(object):
     def __exit__(self, t, v, traceback):
         pass
 
-    def _call_plugins(self, callback_list, obj=None):
+    @staticmethod
+    def _call_plugins(callback_list, obj=None):
         for callback in callback_list:
             try:
                 try:
@@ -125,14 +126,15 @@ class Plugins(object):
             except Exception as e:
                 binwalk.core.common.warning("%s.%s failed [%s]: '%s'" % (callback.__module__, callback.__name__, type(e), e))
 
-    def _find_plugin_class(self, plugin):
+    @staticmethod
+    def _find_plugin_class(plugin):
         for (name, klass) in inspect.getmembers(plugin, inspect.isclass):
             if issubclass(klass, Plugin) and klass != Plugin:
                 return klass
         raise Exception("Failed to locate Plugin class in " + plugin)
 
     def list_plugins(self):
-        '''
+        """
         Obtain a list of all user and system plugin modules.
 
         Returns a dictionary of:
@@ -151,7 +153,7 @@ class Plugins(object):
                             'path'          : "path/to/module/plugin/directory"
                 }
             }
-        '''
+        """
 
         plugins = {
             'user': {

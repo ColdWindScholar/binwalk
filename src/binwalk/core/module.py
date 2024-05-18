@@ -21,13 +21,12 @@ from binwalk.core.exceptions import *
 
 
 class Option(object):
-
-    '''
+    """
     A container class that allows modules to declare command line options.
-    '''
+    """
 
     def __init__(self, kwargs={}, priority=0, description="", short="", long="", type=None, dtype=None, hidden=False):
-        '''
+        """
         Class constructor.
 
         @kwargs      - A dictionary of kwarg key-value pairs affected by this command line option.
@@ -40,7 +39,7 @@ class Option(object):
         @hidden      - If set to True, this option will not be displayed in the help output.
 
         Returns None.
-        '''
+        """
         self.kwargs = kwargs
         self.priority = priority
         self.description = description
@@ -76,13 +75,12 @@ class Option(object):
 
 
 class Kwarg(object):
-
-    '''
+    """
     A container class allowing modules to specify their expected __init__ kwarg(s).
-    '''
+    """
 
     def __init__(self, name="", default=None, description=""):
-        '''
+        """
         Class constructor.
 
         @name        - Kwarg name.
@@ -90,17 +88,16 @@ class Kwarg(object):
         @description - Description string.
 
         Return None.
-        '''
+        """
         self.name = name
         self.default = default
         self.description = description
 
 
 class Dependency(object):
-
-    '''
+    """
     A container class for declaring module dependencies.
-    '''
+    """
 
     def __init__(self, attribute="", name="", kwargs={}):
         self.attribute = attribute
@@ -110,13 +107,12 @@ class Dependency(object):
 
 
 class Result(object):
-
-    '''
+    """
     Generic class for storing and accessing scan results.
-    '''
+    """
 
     def __init__(self, **kwargs):
-        '''
+        """
         Class constructor.
 
         @offset      - The file offset of the result.
@@ -132,7 +128,7 @@ class Result(object):
 
         Provide additional kwargs as necessary.
         Returns None.
-        '''
+        """
         self.offset = 0
         self.size = 0
         self.description = ''
@@ -149,28 +145,26 @@ class Result(object):
 
 
 class Error(Result):
-
-    '''
+    """
     A subclass of binwalk.core.module.Result.
-    '''
+    """
 
     def __init__(self, **kwargs):
-        '''
+        """
         Accepts all the same kwargs as binwalk.core.module.Result, but the following are also added:
 
         @exception - In case of an exception, this is the exception object.
 
         Returns None.
-        '''
+        """
         self.exception = None
         Result.__init__(self, **kwargs)
 
 
 class Module(object):
-
-    '''
+    """
     All module classes must be subclassed from this.
-    '''
+    """
     # The module title, as displayed in help output
     TITLE = ""
 
@@ -273,62 +267,63 @@ class Module(object):
         return None
 
     def load(self):
-        '''
+        """
         Invoked at module load time.
         May be overridden by the module sub-class.
-        '''
+        """
         return None
 
-    def unload(self):
-        '''
+    @staticmethod
+    def unload():
+        """
         Invoked at module load time.
         May be overridden by the module sub-class.
-        '''
+        """
         return None
 
     def reset(self):
-        '''
+        """
         Invoked only for dependency modules immediately prior to starting a new primary module.
-        '''
+        """
         return None
 
     def init(self):
-        '''
+        """
         Invoked prior to self.run.
         May be overridden by the module sub-class.
 
         Returns None.
-        '''
+        """
         return None
 
     def run(self):
-        '''
+        """
         Executes the main module routine.
         Must be overridden by the module sub-class.
 
         Returns True on success, False on failure.
-        '''
+        """
         return False
 
     def callback(self, r):
-        '''
+        """
         Processes the result from all modules. Called for all dependency modules when a valid result is found.
 
         @r - The result, an instance of binwalk.core.module.Result.
 
         Returns None.
-        '''
+        """
         return None
 
     def validate(self, r):
-        '''
+        """
         Validates the result.
         May be overridden by the module sub-class.
 
         @r - The result, an instance of binwalk.core.module.Result.
 
         Returns None.
-        '''
+        """
         r.valid = True
         return None
 
@@ -384,11 +379,11 @@ class Module(object):
                 continue
 
     def next_file(self, close_previous=True):
-        '''
+        """
         Gets the next file to be scanned (including pending extracted files, if applicable).
         Also re/initializes self.status.
         All modules should access the target file list through this method.
-        '''
+        """
         fp = None
 
         # Ensure files are close to prevent IOError (too many open files)
@@ -424,7 +419,7 @@ class Module(object):
                 break
             else:
                 if (self.config.file_name_filter(fp) == False or
-                        self._plugins_load_file(fp) == False):
+                    self._plugins_load_file(fp) == False):
                     fp.close()
                     fp = None
                     continue
@@ -447,23 +442,23 @@ class Module(object):
         return fp
 
     def clear(self, results=True, errors=True):
-        '''
+        """
         Clears results and errors lists.
-        '''
+        """
         if results:
             self.results = []
         if errors:
             self.errors = []
 
     def result(self, r=None, **kwargs):
-        '''
+        """
         Validates a result, stores it in self.results and prints it.
         Accepts the same kwargs as the binwalk.core.module.Result class.
 
         @r - An existing instance of binwalk.core.module.Result.
 
         Returns an instance of binwalk.core.module.Result.
-        '''
+        """
         if r is None:
             r = Result(**kwargs)
 
@@ -502,13 +497,13 @@ class Module(object):
         return r
 
     def error(self, **kwargs):
-        '''
+        """
         Stores the specified error in self.errors.
 
         Accepts the same kwargs as the binwalk.core.module.Error class.
 
         Returns None.
-        '''
+        """
         exception_header_width = 100
 
         e = Error(**kwargs)
@@ -525,25 +520,25 @@ class Module(object):
             sys.stderr.write("\n" + e.module + " Error: " + e.description + "\n\n")
 
     def header(self):
-        '''
+        """
         Displays the scan header, as defined by self.HEADER and self.HEADER_FORMAT.
 
         Returns None.
-        '''
+        """
         self.config.display.format_strings(self.HEADER_FORMAT, self.RESULT_FORMAT)
         self.config.display.add_custom_header(self.VERBOSE_FORMAT, self.VERBOSE)
 
-        if type(self.HEADER) == type([]):
+        if type(self.HEADER) == list():
             self.config.display.header(*self.HEADER, file_name=self.current_target_file_name)
         elif self.HEADER:
             self.config.display.header(self.HEADER, file_name=self.current_target_file_name)
 
     def footer(self):
-        '''
+        """
         Displays the scan footer.
 
         Returns None.
-        '''
+        """
         self.config.display.footer()
 
     def reset_dependencies(self):
@@ -553,11 +548,11 @@ class Module(object):
                 getattr(self, dependency.attribute).reset()
 
     def main(self):
-        '''
+        """
         Responsible for calling self.init, initializing self.config.display, and calling self.run.
 
         Returns the value returned from self.run.
-        '''
+        """
         self.status = self.parent.status
         self.modules = self.parent.executed_modules
 
@@ -605,10 +600,9 @@ class Module(object):
 
 
 class Status(object):
-
-    '''
+    """
     Class used for tracking module status (e.g., % complete).
-    '''
+    """
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
@@ -620,20 +614,19 @@ class Status(object):
 
 
 class Modules(object):
-
-    '''
+    """
     Main class used for running and managing modules.
-    '''
+    """
 
     def __init__(self, *argv, **kargv):
-        '''
+        """
         Class constructor.
 
         @argv  - List of command line options. Must not include the program name (e.g., sys.argv[1:]).
         @kargv - Keyword dictionary of command line options.
 
         Returns None.
-        '''
+        """
         self.arguments = []
         self.executed_modules = {}
         self.default_dependency_modules = {}
@@ -657,27 +650,28 @@ class Modules(object):
     def _set_arguments(self, argv=None, kargv=None):
         if kargv:
             for (k, v) in iterator(kargv):
-                    k = self._parse_api_opt(k)
-                    if v is not True and v is not False and v is not None:
-                        if not isinstance(v, list):
-                            v = [v]
-                        for value in v:
-                            if not isinstance(value, str):
-                                value = str(bytes2str(value))
-                            argv.append(k)
-                            argv.append(value)
-                    else:
-                        # Only append if the value is True; this allows for toggling values
-                        # by the function call.
-                        if v:
-                            argv.append(k)
+                k = self._parse_api_opt(k)
+                if v is not True and v is not False and v is not None:
+                    if not isinstance(v, list):
+                        v = [v]
+                    for value in v:
+                        if not isinstance(value, str):
+                            value = str(bytes2str(value))
+                        argv.append(k)
+                        argv.append(value)
+                else:
+                    # Only append if the value is True; this allows for toggling values
+                    # by the function call.
+                    if v:
+                        argv.append(k)
 
         if not argv and not self.arguments:
             self.arguments = sys.argv[1:]
         elif argv:
             self.arguments = argv
 
-    def _parse_api_opt(self, opt):
+    @staticmethod
+    def _parse_api_opt(opt):
         # If the argument already starts with a hyphen, don't add hyphens in
         # front of it
         if opt.startswith('-'):
@@ -688,14 +682,15 @@ class Modules(object):
         else:
             return '--' + opt
 
-    def list(self, attribute="run"):
-        '''
+    @staticmethod
+    def list(attribute="run"):
+        """
         Finds all modules with the specified attribute.
 
         @attribute - The desired module attribute.
 
         Returns a list of modules that contain the specified attribute, in the order they should be executed.
-        '''
+        """
         import binwalk.modules
         modules = {}
 
@@ -724,11 +719,11 @@ class Modules(object):
         return sorted(modules, key=modules.get, reverse=True)
 
     def help(self):
-        '''
+        """
         Generates formatted help output.
 
         Returns the help string.
-        '''
+        """
         modules = {}
         help_string = "\n"
         help_string += "Binwalk v%s\n" % binwalk.__version__
@@ -767,11 +762,11 @@ class Modules(object):
         return help_string + "\n"
 
     def execute(self, *args, **kwargs):
-        '''
+        """
         Executes all appropriate modules according to the options specified in args/kwargs.
 
         Returns a list of executed module objects.
-        '''
+        """
         run_modules = []
         orig_arguments = self.arguments
 
@@ -795,9 +790,9 @@ class Modules(object):
         return run_modules
 
     def run(self, module, dependency=False, kwargs={}):
-        '''
+        """
         Runs a specific module.
-        '''
+        """
         try:
             obj = self.load(module, kwargs)
 
@@ -844,7 +839,8 @@ class Modules(object):
             if hasattr(binwalk.modules, dependency.name):
                 dependency.module = getattr(binwalk.modules, dependency.name)
             else:
-                raise ModuleException("%s depends on %s which was not found in binwalk.modules.__init__.py\n" % (str(module), dependency.name))
+                raise ModuleException("%s depends on %s which was not found in binwalk.modules.__init__.py\n" % (
+                    str(module), dependency.name))
 
             # No recursive dependencies, thanks
             if dependency.module == module:
@@ -869,14 +865,14 @@ class Modules(object):
         return attributes
 
     def argv(self, module, argv=sys.argv[1:]):
-        '''
+        """
         Processes argv for any options specific to the specified module.
 
         @module - The module to process argv for.
         @argv   - A list of command line arguments (excluding argv[0]).
 
         Returns a dictionary of kwargs for the specified module.
-        '''
+        """
         kwargs = {'enabled': False}
         last_priority = {}
         parser = argparse.ArgumentParser(add_help=False)
@@ -951,15 +947,16 @@ class Modules(object):
         binwalk.core.common.debug("%s :: %s => %s" % (module.TITLE, str(argv), str(kwargs)))
         return kwargs
 
-    def kwargs(self, obj, kwargs):
-        '''
+    @staticmethod
+    def kwargs(obj, kwargs):
+        """
         Processes a module's kwargs. All modules should use this for kwarg processing.
 
         @obj    - An instance of the module (e.g., self)
         @kwargs - The kwargs passed to the module
 
         Returns None.
-        '''
+        """
         if hasattr(obj, "KWARGS"):
             for module_argument in obj.KWARGS:
                 if has_key(kwargs, module_argument.name):
@@ -976,15 +973,15 @@ class Modules(object):
             raise Exception("binwalk.core.module.Modules.process_kwargs: %s has no attribute 'KWARGS'" % str(obj))
 
     def status_server(self, port):
-        '''
+        """
         Starts the progress bar TCP service on the specified port.
         This service will only be started once per instance, regardless of the
         number of times this method is invoked.
 
         Failure to start the status service is considered non-critical; that is,
         a warning will be displayed to the user, but normal operation will proceed.
-        '''
-        if self.status_server_started == False:
+        """
+        if not self.status_server_started:
             self.status_server_started = True
             try:
                 self.status_service = binwalk.core.statuserver.StatusServer(port, self)
@@ -993,26 +990,26 @@ class Modules(object):
 
 
 def process_kwargs(obj, kwargs):
-    '''
+    """
     Convenience wrapper around binwalk.core.module.Modules.kwargs.
 
     @obj    - The class object (an instance of a sub-class of binwalk.core.module.Module).
     @kwargs - The kwargs provided to the object's __init__ method.
 
     Returns None.
-    '''
+    """
     with Modules() as m:
         kwargs = m.kwargs(obj, kwargs)
     return kwargs
 
 
 def show_help(fd=sys.stdout):
-    '''
+    """
     Convenience wrapper around binwalk.core.module.Modules.help.
 
     @fd - An object with a write method (e.g., sys.stdout, sys.stderr, etc).
 
     Returns None.
-    '''
+    """
     with Modules() as m:
         fd.write(m.help())

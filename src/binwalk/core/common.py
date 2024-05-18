@@ -205,20 +205,19 @@ class GenericContainer(object):
 
 
 class MathExpression(object):
-
-    '''
+    """
     Class for safely evaluating mathematical expressions from a string.
     Stolen from: http://stackoverflow.com/questions/2371436/evaluating-a-mathematical-expression-in-a-string
-    '''
+    """
 
     OPERATORS = {
-        ast.Add:    op.add,
-        ast.UAdd:   op.add,
-        ast.USub:   op.sub,
-        ast.Sub:    op.sub,
-        ast.Mult:   op.mul,
-        ast.Div:    op.truediv,
-        ast.Pow:    op.pow,
+        ast.Add: op.add,
+        ast.UAdd: op.add,
+        ast.USub: op.sub,
+        ast.Sub: op.sub,
+        ast.Mult: op.mul,
+        ast.Div: op.truediv,
+        ast.Pow: op.pow,
         ast.BitXor: op.xor
     }
 
@@ -251,14 +250,13 @@ class MathExpression(object):
 
 
 class StringFile(object):
-
-    '''
+    """
     A class to allow access to strings as if they were read from a file.
     Used internally as a conditional superclass to InternalBlockFile.
-    '''
+    """
 
     def __init__(self, fname, mode='r'):
-        self.string = fname #bytes2str(fname)
+        self.string = fname  # bytes2str(fname)
         self.name = "String"
         self.args.size = len(self.string)
 
@@ -283,11 +281,10 @@ class StringFile(object):
 
 
 def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
-
     # Defining a class inside a function allows it to be dynamically subclassed
     class InternalBlockFile(subclass):
 
-        '''
+        """
         Abstraction class for accessing binary files.
 
         This class overrides io.FilIO's read and write methods. This guaruntees two things:
@@ -308,7 +305,7 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
         for Python 3, but it seemed the best way to abstract differences in Python 2/3 from the rest
         of the code (especially for people writing plugins) and to add Python 3 support with
         minimal code change.
-        '''
+        """
 
         # The DEFAULT_BLOCK_PEEK_SIZE limits the amount of data available to a signature.
         # While most headers/signatures are far less than this value, some may reference
@@ -323,8 +320,9 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
         # blocks.
         DEFAULT_BLOCK_READ_SIZE = 1 * 1024 * 1024
 
-        def __init__(self, fname, mode='r', length=0, offset=0, block=DEFAULT_BLOCK_READ_SIZE, peek=DEFAULT_BLOCK_PEEK_SIZE, swap=0):
-            '''
+        def __init__(self, fname, mode='r', length=0, offset=0, block=DEFAULT_BLOCK_READ_SIZE,
+                     peek=DEFAULT_BLOCK_PEEK_SIZE, swap=0):
+            """
             Class constructor.
 
             @fname  - Path to the file to be opened.
@@ -336,7 +334,7 @@ def BlockFile(fname, mode='r', subclass=io.FileIO, **kwargs):
             @swap   - Swap every n bytes of data.
 
             Returns None.
-            '''
+            """
             self.total_read = 0
             self.block_read_size = self.DEFAULT_BLOCK_READ_SIZE
             self.block_peek_size = self.DEFAULT_BLOCK_PEEK_SIZE

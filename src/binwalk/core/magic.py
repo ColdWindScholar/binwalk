@@ -13,10 +13,9 @@ from binwalk.core.exceptions import ParserException
 
 
 class SignatureResult(binwalk.core.module.Result):
-
-    '''
+    """
     Container class for signature results.
-    '''
+    """
 
     def __init__(self, **kwargs):
         # These are set by signature keyword tags.
@@ -42,22 +41,21 @@ class SignatureResult(binwalk.core.module.Result):
 
 
 class SignatureLine(object):
-
-    '''
+    """
     Responsible for parsing signature lines from magic signature files.
-    '''
+    """
 
     # Printed strings are truncated to this size
     MAX_STRING_SIZE = 128
 
     def __init__(self, line):
-        '''
+        """
         Class constructor. Responsible for parsing a line from a signature file.
 
         @line - A line of text from the signature file.
 
         Returns None.
-        '''
+        """
         self.tags = {}
         self.text = line
         self.regex = False
@@ -165,7 +163,8 @@ class SignatureLine(object):
                 except KeyboardInterrupt as e:
                     raise e
                 except Exception as e:
-                    raise ParserException("Failed to expand string '%s' with integer '%s' in line '%s'" % (self.value, n, line))
+                    raise ParserException(
+                        "Failed to expand string '%s' with integer '%s' in line '%s'" % (self.value, n, line))
             try:
                 self.value = binwalk.core.compat.string_decode(self.value)
             except ValueError as e:
@@ -190,7 +189,7 @@ class SignatureLine(object):
         # Sanity check to make sure the first line of a signature has an
         # explicit value
         if self.level == 0 and self.value is None:
-            raise ParserException("First element of a signature must specify a non-wildcard value: '%s'" % (line))
+            raise ParserException("First element of a signature must specify a non-wildcard value: '%s'" % line)
 
         # Set the size and struct format value for the specified data type.
         # This must be done, obviously, after the value has been parsed out
@@ -274,13 +273,12 @@ class SignatureLine(object):
 
 
 class Signature(object):
-
-    '''
+    """
     Class to hold signature data and generate signature regular expressions.
-    '''
+    """
 
     def __init__(self, sid, first_line):
-        '''
+        """
         Class constructor.
 
         @sid        - A ID value to uniquely identify this signature.
@@ -288,7 +286,7 @@ class Signature(object):
                       SignatureLines should be added via self.append).
 
         Returns None.
-        '''
+        """
         self.id = sid
         self.lines = [first_line]
         self.title = first_line.format
@@ -299,15 +297,16 @@ class Signature(object):
         except KeyError:
             self.confidence = first_line.size
 
-    def _generate_regex(self, line):
-        '''
+    @staticmethod
+    def _generate_regex(line):
+        """
         Generates a regular expression from the magic bytes of a signature.
         The regex is used by Magic._analyze.
 
         @line - The first SignatureLine object of the signature.
 
         Returns a compile regular expression.
-        '''
+        """
         restr = ""
 
         # Strings and single byte signatures are taken at face value;
@@ -375,27 +374,26 @@ class Signature(object):
         return re.compile(re.escape(restr))
 
     def append(self, line):
-        '''
+        """
         Add a new SignatureLine object to the signature.
 
         @line - A new SignatureLine instance.
 
         Returns None.
-        '''
+        """
         # This method is kind of useless, but may be a nice wrapper for future
         # code.
         self.lines.append(line)
 
 
 class Magic(object):
-
-    '''
+    """
     Primary class for loading signature files and scanning
     blocks of arbitrary data for matching signatures.
-    '''
+    """
 
     def __init__(self, exclude=[], include=[], invalid=False):
-        '''
+        """
         Class constructor.
 
         @include - A list of regex strings describing which signatures should be included in the scan results.
@@ -403,7 +401,7 @@ class Magic(object):
         @invalid - If set to True, invalid results will not be ignored.
 
         Returns None.
-        '''
+        """
         # Used to save the block of data passed to self.scan (see additional
         # comments in self.scan)
         self.data = ""
@@ -428,20 +426,20 @@ class Magic(object):
         # Regex rule to find format strings
         self.fmtstr = re.compile("%[^%]")
         # Regex rule to find periods (see self._do_math)
-        self.period = re.compile("\.")
+        self.period = re.compile("\\.")
 
     def reset(self):
         self.display_once = set()
 
     def _filtered(self, text):
-        '''
+        """
         Tests if a string should be filtered out or not.
 
         @text - The string to check against filter rules.
 
         Returns True if the string should be filtered out, i.e., not displayed.
         Returns False if the string should be displayed.
-        '''
+        """
         filtered = None
         # Text is converted to lower case first, partially for historical
         # purposes, but also because it simplifies writing filter rules
@@ -455,7 +453,7 @@ class Magic(object):
 
         # If exclusive include filters have been specified and did
         # not match the text, then the text should be filtered out.
-        if self.includes and filtered == None:
+        if self.includes and filtered is None:
             return True
 
         for exclude in self.excludes:
@@ -465,20 +463,20 @@ class Magic(object):
 
         # If no explicit exclude filters were matched, then the
         # text should *not* be filtered.
-        if filtered == None:
+        if filtered is None:
             filtered = False
 
         return filtered
 
     def _do_math(self, offset, expression):
-        '''
+        """
         Parses and evaluates complex expressions, e.g., "(4.l+12)", "(6*32)", etc.
 
         @offset      - The offset inside self.data that the current signature starts at.
         @expressions - The expression to evaluate.
 
         Returns an integer value that is the result of the evaluated expression.
-        '''
+        """
         # Does the expression contain an offset (e.g., "(4.l+12)")?
         if '.' in expression and '(' in expression:
             replacements = {}
@@ -546,19 +544,19 @@ class Magic(object):
         return value
 
     def _analyze(self, signature, offset):
-        '''
+        """
         Analyzes self.data for the specified signature data at the specified offset .
 
         @signature - The signature to apply to the data.
         @offset    - The offset in self.data to apply the signature to.
 
         Returns a dictionary of tags parsed from the data.
-        '''
+        """
         description = []
         max_line_level = 0
         previous_line_end = 0
         tags = {'id': signature.id, 'offset':
-                offset, 'invalid': False, 'once': False}
+            offset, 'invalid': False, 'once': False}
 
         # Apply each line of the signature to self.data, starting at the
         # specified offset
@@ -606,7 +604,8 @@ class Magic(object):
                     if line.value is None:
                         # Check to see if this is a string whose size is known and has been specified on a previous
                         # signature line.
-                        if binwalk.core.compat.has_key(tags, 'strlen') and binwalk.core.compat.has_key(line.tags, 'string'):
+                        if binwalk.core.compat.has_key(tags, 'strlen') and binwalk.core.compat.has_key(line.tags,
+                                                                                                       'string'):
                             dvalue = self.data[start:(start + tags['strlen'])]
                         # Else, just terminate the string at the first newline,
                         # carriage return, or NULL byte
@@ -675,7 +674,7 @@ class Magic(object):
                     (line.condition == '~' and (dvalue == ~line.value)) or
                     (line.condition == '^' and (dvalue ^ line.value)) or
                     (line.condition == '&' and (dvalue & line.value)) or
-                        (line.condition == '|' and (dvalue | line.value))):
+                    (line.condition == '|' and (dvalue | line.value))):
 
                     # Up until this point, date fields are treated as integer values,
                     # but we want to display them as nicely formatted strings.
@@ -777,24 +776,24 @@ class Magic(object):
         return tags
 
     def match(self, data):
-        '''
+        """
         Match the beginning of a data buffer to a signature.
 
         @data - The data buffer to match against the loaded signature list.
 
         Returns a list of SignatureResult objects.
-        '''
+        """
         return self.scan(data, 1)
 
     def scan(self, data, dlen=None):
-        '''
+        """
         Scan a data block for matching signatures.
 
         @data - A string of data to scan.
         @dlen - If specified, signatures at offsets larger than dlen will be ignored.
 
         Returns a list of SignatureResult objects.
-        '''
+        """
         results = []
         matched_offsets = set()
 
@@ -820,8 +819,8 @@ class Magic(object):
                 # If this offset has already been matched to a previous signature, ignore it unless
                 # self.show_invalid has been specified. Also ignore obviously invalid offsets (<0)
                 # as well as those outside the specified self.data range (dlen).
-                if (offset not in matched_offsets or self.show_invalid) and offset >= 0 and offset < dlen:
-                # if offset >= 0 and offset < dlen:
+                if (offset not in matched_offsets or self.show_invalid) and 0 <= offset < dlen:
+                    # if offset >= 0 and offset < dlen:
                     # Analyze the data at this offset using the current
                     # signature rule
                     tags = self._analyze(signature, offset)
@@ -835,7 +834,7 @@ class Magic(object):
                                 continue
                             else:
                                 self.display_once.add(signature.title)
-                        
+
                         # Append the result to the results list
                         results.append(SignatureResult(**tags))
 
@@ -849,13 +848,13 @@ class Magic(object):
         return results
 
     def load(self, fname):
-        '''
+        """
         Load signatures from a file.
 
         @fname - Path to signature file.
 
         Returns None.
-        '''
+        """
         # Magic files must be ASCII, else encoding issues can arise.
         fp = open(fname, "r")
         lines = fp.readlines()
@@ -863,13 +862,13 @@ class Magic(object):
         fp.close()
 
     def parse(self, lines):
-        '''
+        """
         Parse signature file lines.
 
         @lines - A list of lines from a signature file.
 
         Returns None.
-        '''
+        """
         signature = None
 
         for line in lines:

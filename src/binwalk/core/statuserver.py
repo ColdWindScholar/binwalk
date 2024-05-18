@@ -35,11 +35,12 @@ class StatusRequestHandler(SocketServer.BaseRequestHandler):
                     break
 
                 if self.server.binwalk.status.total != 0:
-                    percentage = ((float(self.server.binwalk.status.completed) / float(self.server.binwalk.status.total)) * 100)
+                    percentage = ((float(self.server.binwalk.status.completed) / float(
+                        self.server.binwalk.status.total)) * 100)
                     status_message = message_format % (self.server.binwalk.status.fp.path,
-                        percentage,
-                        self.server.binwalk.status.completed,
-                        self.server.binwalk.status.total)
+                                                       percentage,
+                                                       self.server.binwalk.status.completed,
+                                                       self.server.binwalk.status.total)
                 elif not message_sent:
                     status_message = "No status information available at this time!"
                 else:

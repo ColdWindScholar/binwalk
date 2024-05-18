@@ -35,8 +35,9 @@ class Display(object):
             if csv:
                 self.csv = pycsv.writer(self.fp)
 
-    def _fix_unicode(self, line):
-        '''
+    @staticmethod
+    def _fix_unicode(line):
+        """
         This is a hack, there must be a better way to handle it.
         In Python3, if the environment variable LANG=C is set, indicating
         that the terminal is ASCII only, but unicode characters need to be
@@ -45,13 +46,13 @@ class Display(object):
 
         This converts the given line to ASCII, ignoring conversion errors,
         and returns a str.
-        '''
+        """
         return bytes2str(line.encode('ascii', 'ignore'))
 
     def _fix_unicode_list(self, columns):
-        '''
+        """
         Convenience wrapper for self.log which is passed a list of format arguments.
-        '''
+        """
         if type(columns) in [list, tuple]:
             for i in range(0, len(columns)):
                 try:
@@ -153,10 +154,10 @@ class Display(object):
             self.log(fmt, columns)
 
     def _append_to_data_parts(self, data, start, end):
-        '''
+        """
         Intelligently appends data to self.string_parts.
         For use by self._format.
-        '''
+        """
         try:
             while data[start] == ' ':
                 start += 1
@@ -178,10 +179,10 @@ class Display(object):
         return start
 
     def _format_line(self, line):
-        '''
+        """
         Formats a line of text to fit in the terminal window.
         For Tim.
-        '''
+        """
         delim = '\n'
         offset = 0
         self.string_parts = []
@@ -230,11 +231,11 @@ class Display(object):
         return formatted_line
 
     def _configure_formatting(self):
-        '''
+        """
         Configures output formatting, and fitting output to the current terminal width.
 
         Returns None.
-        '''
+        """
         self.format_strings(self.DEFAULT_FORMAT, self.DEFAULT_FORMAT)
 
         if self.fit_to_screen:

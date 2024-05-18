@@ -7,10 +7,10 @@ import logging
 
 class ShutUpHashlib(logging.Filter):
 
-    '''
+    """
     This is used to suppress hashlib exception messages
     if using the Python interpreter bundled with IDA.
-    '''
+    """
 
     def filter(self, record):
         return not record.getMessage().startswith("code for hash")
@@ -42,14 +42,14 @@ def end_address():
 
 class IDBFileIO(io.FileIO):
 
-    '''
+    """
     A custom class to override binwalk.core.common.Blockfile in order to
     read data directly out of the IDB, rather than reading from the original
     file on disk, which may or may not still exist.
 
     Requests to read from files that are not the current IDB are just forwarded
     up to io.FileIO.
-    '''
+    """
 
     def __init__(self, fname, mode):
         if idc.GetIdbPath() != fname:
