@@ -10,7 +10,8 @@ class TarPlugin(binwalk.core.plugin.Plugin):
     # "borrowed from pythons tarfile module"
     TAR_BLOCKSIZE = 512
 
-    def nts(self, s):
+    @staticmethod
+    def nts(s):
         """
         Convert a null-terminated string field to a python string.
         """

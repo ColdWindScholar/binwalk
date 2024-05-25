@@ -63,9 +63,8 @@ class HexDiff(Module):
         return c
 
     def _colorize(self, c, color="red", bold=True):
-        attr = []
+        attr = [self.COLORS[color]]
 
-        attr.append(self.COLORS[color])
         if bold:
             attr.append('1')
 
@@ -114,7 +113,7 @@ class HexDiff(Module):
 
         asciibyte = self.colorize(byte, color)
 
-        return (hexbyte, asciibyte)
+        return hexbyte, asciibyte
 
     def diff_files(self, target_files):
         last_raw_line = None

@@ -25,7 +25,6 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
                                            recurse=False)  # Most CPIO archives are file systems, so don't recurse into the extracted contents
 
     def extractor(self, fname):
-        result = None
         fname = os.path.abspath(fname)
         out_dir_base_name = os.path.join(os.path.dirname(fname), self.CPIO_OUT_DIR)
         out_dir = binwalk.core.common.unique_file_name(out_dir_base_name)
@@ -73,7 +72,8 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
             name = description.split('file name: "')[1].split('"')[0]
         return name
 
-    def _get_file_name_length(self, description):
+    @staticmethod
+    def _get_file_name_length(description):
         length = None
         if 'file name length: "' in description:
             length_string = description.split('file name length: "')[1].split('"')[0]
@@ -83,7 +83,8 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
                 pass
         return length
 
-    def _get_file_size(self, description):
+    @staticmethod
+    def _get_file_size(description):
         size = None
         if 'file size: "' in description:
             size_string = description.split('file size: "')[1].split('"')[0]

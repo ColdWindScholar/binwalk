@@ -157,10 +157,10 @@ class General(Module):
         pass
 
     def _set_verbosity(self):
-        '''
+        """
         Sets the appropriate verbosity.
         Must be called after self._test_target_files so that self.target_files is properly set.
-        '''
+        """
         # If more than one target file was specified, enable verbose mode; else, there is
         # nothing in some outputs to indicate which scan corresponds to which
         # file.
@@ -168,14 +168,14 @@ class General(Module):
             self.verbose = True
 
     def file_name_filter(self, fp):
-        '''
+        """
         Checks to see if a file should be scanned based on file name include/exclude filters.
         Most useful for matryoshka scans where only certian files are desired.
 
         @fp - An instances of binwalk.common.BlockFile
 
         Returns True if the file should be scanned, False if not.
-        '''
+        """
         if self.file_name_include_regex and not self.file_name_include_regex.search(fp.name):
             return False
         if self.file_name_exclude_regex and self.file_name_exclude_regex.search(fp.name):
@@ -184,9 +184,9 @@ class General(Module):
         return True
 
     def open_file(self, fname, length=None, offset=None, swap=None, block=None, peek=None):
-        '''
+        """
         Opens the specified file with all pertinent configuration settings.
-        '''
+        """
         if length is None:
             length = self.length
         if offset is None:
@@ -203,10 +203,10 @@ class General(Module):
                                              peek=peek)
 
     def _open_target_files(self):
-        '''
+        """
         Checks if the target files can be opened.
         Any files that cannot be opened are removed from the self.target_files list.
-        '''
+        """
         # Validate the target files listed in target_files
         for tfile in self.files:
             # Ignore directories.
