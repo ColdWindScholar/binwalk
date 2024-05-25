@@ -232,10 +232,11 @@ class Entropy(Module):
         if self.do_plot:
             self.plot_entropy(fp.name)
 
-    def shannon(self, data):
-        '''
+    @staticmethod
+    def shannon(data):
+        """
         Performs a Shannon entropy analysis on a given block of data.
-        '''
+        """
         entropy = 0
 
         if data:
@@ -250,7 +251,7 @@ class Entropy(Module):
                 if p_x > 0:
                     entropy -= p_x * math.log(p_x, 2)
 
-        return (entropy / 8)
+        return entropy / 8
 
     def shannon_numpy(self, data):
         if data:
@@ -264,13 +265,13 @@ class Entropy(Module):
         A = np.frombuffer(data, dtype=np.uint8)
         pA = np.bincount(A) / len(A)
         entropy = -np.nansum(pA * np.log2(pA))
-        return (entropy / 8)
+        return entropy / 8
 
     def gzip(self, data, truncate=True):
-        '''
+        """
         Performs an entropy analysis based on zlib compression ratio.
         This is faster than the shannon entropy analysis, but not as accurate.
-        '''
+        """
         # Entropy is a simple ratio of: <zlib compressed size> / <original
         # size>
         e = float(float(len(zlib.compress(str2bytes(data), 9))) / float(len(data)))

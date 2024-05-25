@@ -32,9 +32,9 @@ class ExtractInfo(object):
 
 class Extractor(Module):
 
-    '''
+    """
     Extractor class, responsible for extracting files from the target file and executing external applications, if requested.
-    '''
+    """
     # Extract rules are delimited with a colon.
     # <case insensitive matching string>:<file extension>[:<command to run>]
     RULE_DELIM = ':'
@@ -347,7 +347,7 @@ class Extractor(Module):
                 self.append_rule(r)
 
     def create_rule(self, txtrule=None, regex=None, extension=None, cmd=None, codes=[0, None], recurse=True):
-        '''
+        """
         Adds a set of rules to the extraction rule list.
 
         @txtrule   - Rule string, or list of rule strings, in the format <regular expression>:<file extension>[:<command to run>]
@@ -359,8 +359,7 @@ class Extractor(Module):
         @recurse   - If False, extracted directories will not be recursed into when the matryoshka option is enabled.
 
         Returns None.
-        '''
-        rules = []
+        """
         created_rules = []
         match = False
         r = {
@@ -410,13 +409,13 @@ class Extractor(Module):
         return created_rules
 
     def remove_rules(self, description):
-        '''
+        """
         Remove all rules that match a specified description.
 
         @description - The description to match against.
 
         Returns the number of rules removed.
-        '''
+        """
         rm = []
         description = description.lower()
 
@@ -430,7 +429,7 @@ class Extractor(Module):
         return len(rm)
 
     def edit_rules(self, description, key, value):
-        '''
+        """
         Edit all rules that match a specified description.
 
         @description - The description to match against.
@@ -438,7 +437,7 @@ class Extractor(Module):
         @value       - The new key value for each matching rule.
 
         Returns the number of rules modified.
-        '''
+        """
         count = 0
         description = description.lower()
 
@@ -451,11 +450,11 @@ class Extractor(Module):
         return count
 
     def clear_rules(self):
-        '''
+        """
         Deletes all extraction rules.
 
         Returns None.
-        '''
+        """
         self.extract_rules = []
 
     def get_rules(self, description=None):
@@ -525,24 +524,24 @@ class Extractor(Module):
         return self.output_directory_override
 
     def override_output_directory_basename(self, dirname):
-        '''
+        """
         Allows the overriding of the default extraction directory basename.
 
         @dirname - The directory base name to use.
 
         Returns the current output directory basename override value.
-        '''
+        """
         self.output_directory_override = dirname
         return self.output_directory_override
 
     def build_output_directory(self, path):
-        '''
+        """
         Set the output directory for extracted files.
 
         @path - The path to the file that data will be extracted from.
 
         Returns None.
-        '''
+        """
         # If we have not already created an output directory for this target
         # file, create one now
         if not has_key(self.extraction_directories, path):
@@ -587,7 +586,7 @@ class Extractor(Module):
         return output_directory
 
     def cleanup_extracted_files(self, tf=None):
-        '''
+        """
         Set the action to take after a file is extracted.
 
         @tf - If set to True, extracted files will be cleaned up after running a command against them.
@@ -595,14 +594,14 @@ class Extractor(Module):
               If set to None or not specified, the current setting will not be changed.
 
         Returns the current cleanup status (True/False).
-        '''
+        """
         if tf is not None:
             self.remove_after_execute = tf
 
         return self.remove_after_execute
 
     def extract(self, offset, description, file_name, size, name=None):
-        '''
+        """
         Extract an embedded file from the target file, if it matches an extract rule.
         Called automatically by Binwalk.scan().
 
@@ -613,7 +612,7 @@ class Extractor(Module):
         @name        - Name to save the file as.
 
         Returns the name of the extracted file (blank string if nothing was extracted).
-        '''
+        """
         fname = ''
         rule = None
         recurse = False
@@ -704,7 +703,7 @@ class Extractor(Module):
                             pass
 
                     # If the command executed OK, don't try any more rules
-                    if extract_ok == True:
+                    if extract_ok:
                         break
                     # Else, remove the extracted file if this isn't the last rule in the list.
                     # If it is the last rule, leave the file on disk for the
@@ -808,7 +807,7 @@ class Extractor(Module):
         return values
 
     def _dd(self, file_name, offset, size, extension, output_file_name=None):
-        '''
+        """
         Extracts a file embedded inside the target file.
 
         @file_name        - Path to the target file.
@@ -818,7 +817,7 @@ class Extractor(Module):
         @output_file_name - The requested name of the output file.
 
         Returns the extracted file name.
-        '''
+        """
         total_size = 0
         # Default extracted file name is <displayed hex offset>.<extension>
         default_bname = "%X" % (offset + self.config.base)

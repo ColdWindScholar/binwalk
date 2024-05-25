@@ -105,9 +105,9 @@ class Signature(Module):
         self.VERBOSE = ["Signatures:", len(self.magic.signatures)]
 
     def validate(self, r):
-        '''
+        """
         Called automatically by self.result.
-        '''
+        """
         if self.show_invalid:
             r.valid = True
         elif r.valid:
@@ -171,7 +171,7 @@ class Signature(Module):
                 self.result(r=r)
 
                 # If a sigure specified the end tag, jump to the end of the file
-                if r.end == True:
+                if r.end:
                     r.jump = fp.size
 
                 # Is this a valid result and did it specify a jump-to-offset
