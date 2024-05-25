@@ -55,10 +55,7 @@ class CPIOPlugin(binwalk.core.plugin.Plugin):
         fpin.close()
         fperr.close()
 
-        if result in [0, 2]:
-            return True
-        else:
-            return False
+        return result in [0, 2]
 
     def pre_scan(self):
         # Be sure to re-set this at the beginning of every scan
